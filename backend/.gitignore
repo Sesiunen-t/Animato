@@ -1,0 +1,36 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__
+local_settings.py
+db.sqlite3
+media
+
+# Development
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Virtual environment
+venv/
+*.env
+
+# Docker
+data/db/
