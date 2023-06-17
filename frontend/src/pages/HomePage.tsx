@@ -4,7 +4,7 @@ import flowerUp from '../assets/flowerUp.svg';
 import flowerDown from '../assets/flowerDown.svg';
 import bigWeb from '../assets/bigWeb.svg';
 import smallWeb from  '../assets/smallWeb.svg';
-import animato from '../assets/animato.svg'
+import animato from '../assets/animato.svg';
 
 const HomePage: React.FC = () => {
 
@@ -14,10 +14,10 @@ const HomePage: React.FC = () => {
         <img src={flowerDown} alt="flowerDown" className= 'z-10 absolute bottom-0 right-0 h-[60%] w-[55%] -mx-[20%]'/>
         <img src={bigWeb} alt="spiderWeb" className="absolute bottom-0 right-0"/>
         <img src={smallWeb} alt="spiderWeb" className="absolute bottom-0 right-0 h-[70%] w-[70%]"/>
-        <div className="w-full h-full flex justify-center items-center">
-            <img src={animato} alt="animato" className="w-[80%] h-[80%]"/>
+        <div className="w-full h-full flex justify-center items-center bg-red-500">
+            <img src={animato} alt="animato" className="w-[45%] h-[45%] absolute mt-[22%]"/>
+            <VideoGenerator />
         </div>
-      <VideoGenerator />
     </div>
   );
 };

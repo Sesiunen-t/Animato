@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SpeechToText from './SpeechToText';
+import sendButton from '../assets/send.svg'
+import symbol from '../assets/ai.svg';
 
 function VideoGenerator() {
 
@@ -96,12 +98,19 @@ function VideoGenerator() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <SpeechToText setPrompt={setPrompt} />
-        <input type="text" value={prompt} onChange={handleInputChange} />
-        <button type="submit" disabled={loading}>Generate Video</button>
+    <div className="z-20 absolute w-full mt-[66.5%] h-[60%]">
+      <form onSubmit={handleSubmit} className="w-full flex justify-center items-center mt-[1.5%]">
+        <input type="text" value={prompt} onChange={handleInputChange} className="h-16 w-[60%] rounded-full shadow-lg border border-gray-100 placeholder:font-thin placeholder:text-2xl placeholder:ml-10 text-xl font-light text-gray-500 pl-6" placeholder="Ex: Create an animation with a walking integral"/>
+        <button type="submit" disabled={loading} className="absolute ml-[55.5%]">
+            <img src={sendButton} alt="playButton" className="w-[75%] h-[75%]"/>
+        </button>
       </form>
+        {/*<SpeechToText setPrompt={setPrompt} />*/}
+        <div className="flex justify-center items-center w-full h-[78%] mt-[1.9%]">
+            <div className="h-full w-[63%] border border-gray-300 rounded-3xl bg-white shadow-lg flex justify-center">
+                <img src={symbol} alt="aiSymbol" className="w-[33%] h-[33%] mt-[10%]"/>§
+            </div>
+        </div>
       {loading && <p>Loading...</p>}
       {videoURL && <video src={videoURL} controls />}
       {videoURL && (
