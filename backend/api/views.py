@@ -15,6 +15,20 @@ import tempfile
 import os
 import time
 
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import threading
+
+class FileCreatedHandler(FileSystemEventHandler):
+    def __init__(self, filename, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.filename = filename
+        self.file_created = threading.Event()
+
+    def on_created(self, event):
+        if event.src_path.endswith(self.filename):
+            self.file_created.set()
+
 class GetRoutes(APIView):
     """API endpoint for getting available routes."""
     def get(self, request):
@@ -58,9 +72,24 @@ class GenerateVideoView(APIView):
 
         temp_file_name_path = Path(temp_file_name)
         output_directory = Path(settings.MEDIA_ROOT) / 'videos' / temp_file_name_path.stem
-        output_file_path = output_directory / '480p15' / 'Generated.mp4'
+        output_directory_480 = output_directory / '480p15'
+        output_file_path = output_directory_480 / 'Generated.mp4'
+
+        # Check if the directories exist and if not, create them
+        output_directory.mkdir(parents=True, exist_ok=True)
+        output_directory_480.mkdir(parents=True, exist_ok=True)
+
+        handler = FileCreatedHandler('Generated.mp4')
+        observer = Observer()
+        observer.schedule(handler, path=str(output_directory_480), recursive=False)
+        observer.start()
+
         result = subprocess.run(['manim', '-ql', temp_file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        time.sleep(1) # wait for file to be written to disk
+        print(result)
+
+        handler.file_created.wait()  # This will block until 'Generated.mp4' is created
+        observer.stop()
+        observer.join()
 
         with open(output_file_path, 'rb') as f:
             video_content = f.read()
