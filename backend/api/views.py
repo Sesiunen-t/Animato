@@ -13,7 +13,6 @@ from rest_framework.response import Response
 import subprocess
 import tempfile
 import os
-import time
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -45,6 +44,21 @@ class PromptList(generics.ListCreateAPIView):
     """API endpoint for listing and creating Prompts."""
     queryset = Prompt.objects.all()
     serializer_class = PromptSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        response = {
+            'id': serializer.data['id'],
+            'detail': f"Prompt created. ID: {serializer.data['id']}"
+        }
+        return Response(response, headers=headers)
+    
+    def perform_create(self, serializer):
+        serializer.save()
+
 
 class PromptDetail(generics.RetrieveDestroyAPIView):
     """API endpoint for retrieving and deleting a specific Prompt."""
@@ -112,5 +126,9 @@ class GenerateScriptAndVideoView(APIView):
 
         if video_response.status_code != 200:
             return Response({"detail": "Error generating video."})
-        
-        return Response({"detail": f"Script and video {video_id} generated successfully."})
+
+        video = GeneratedVideo.objects.get(id=video_id)
+        video_file_url = request.build_absolute_uri(video.video_file.url)
+
+        return Response({"detail": f"Script and video {video_id} generated successfully.",
+                         "video_url": video_file_url})
