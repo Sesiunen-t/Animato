@@ -11,12 +11,15 @@ from pathlib import Path
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import subprocess
+import logging
 import tempfile
 import os
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import threading
+
+logger = logging.getLogger(__name__)
 
 class FileCreatedHandler(FileSystemEventHandler):
     def __init__(self, filename, *args, **kwargs):
@@ -97,10 +100,11 @@ class GenerateVideoView(APIView):
         observer = Observer()
         observer.schedule(handler, path=str(output_directory_480), recursive=False)
         observer.start()
+        logger.info(f"Running script: {script}")
 
+        # Then run your subprocess command
         result = subprocess.run(['manim', '-ql', temp_file_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        print(result)
-
+        print(script)
         handler.file_created.wait()  # This will block until 'Generated.mp4' is created
         observer.stop()
         observer.join()
