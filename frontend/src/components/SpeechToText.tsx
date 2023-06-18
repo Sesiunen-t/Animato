@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import mic from "../assets/mic.svg";
 
 type SpeechToTextProps = {
     setPrompt: React.Dispatch<React.SetStateAction<string>>;
@@ -34,7 +35,9 @@ const SpeechToText: React.FC<SpeechToTextProps> = ({ setPrompt }) => {
     };
 
     return (
-        <button onClick={handleSpeech}>Speak</button>
+        <button onClick={handleSpeech}>
+            <img src={mic} alt="microphoneIcon" className="w-12 h-12 absolute -ml-[64%] -mt-[1.4%]"/>
+        </button>
     );
 };
 

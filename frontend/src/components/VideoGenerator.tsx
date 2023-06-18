@@ -2,11 +2,16 @@ import React, { useEffect, useState } from 'react';
 import SpeechToText from './SpeechToText';
 import sendButton from '../assets/send.svg'
 import symbol from '../assets/ai.svg';
+import download from '../assets/download.svg';
+import clear from '../assets/clear.svg';
 
+type SpeechToTextProps = {
+    setPrompt: React.Dispatch<React.SetStateAction<string>>;
+};
 function VideoGenerator() {
 
   const [prompt, setPrompt] = useState('');
-  const [videoURL, setVideoURL] = useState<string | null>(null);
+  const [videoURL, setVideoURL] = useState<string | null>();
   const [loading, setLoading] = useState(false);
   
   useEffect(() => {
@@ -101,24 +106,32 @@ function VideoGenerator() {
     <div className="z-20 absolute w-full mt-[66.5%] h-[60%]">
       <form onSubmit={handleSubmit} className="w-full flex justify-center items-center mt-[1.5%]">
         <input type="text" value={prompt} onChange={handleInputChange} className="h-16 w-[60%] rounded-full shadow-lg border border-gray-100 placeholder:font-thin placeholder:text-2xl placeholder:ml-10 text-xl font-light text-gray-500 pl-6" placeholder="Ex: Create an animation with a walking integral"/>
-        <button type="submit" disabled={loading} className="absolute ml-[55.5%]">
+          <SpeechToText setPrompt={setPrompt}/>
+        <button type="submit" className="absolute ml-[57%]">
             <img src={sendButton} alt="playButton" className="w-[75%] h-[75%]"/>
         </button>
       </form>
         {/*<SpeechToText setPrompt={setPrompt} />*/}
         <div className="flex justify-center items-center w-full h-[78%] mt-[1.9%]">
-            <div className="h-full w-[63%] border border-gray-300 rounded-3xl bg-white shadow-lg flex justify-center">
-                <img src={symbol} alt="aiSymbol" className="w-[33%] h-[33%] mt-[10%]"/>§
+            <div className="h-full w-[62%] border border-gray-300 rounded-3xl bg-white shadow-lg flex justify-center relative">
+                {videoURL &&
+                    <div className="h-full w-full absolute z-20">
+                        <video className="w-full h-full rounded-3xl" src="https://www.youtube.com/watch?v=cy8r7WSuT1I" controls/>
+                        <button onClick={downloadVideo}>
+                            <img src={download} alt="downloadVideo" className="w-[10%] h-[10%] absolute -ml-[9%] -mt-[8%]"/>
+                        </button>
+                        <button onClick={clearVideo}>
+                            <img src={clear} alt="clearVideoButton" className="w-[14%] h-[14%] absolute -ml-[11%] -mt-[43.5%]"/>
+                        </button>
+                    </div>
+                }
+                <img src={symbol} alt="aiSymbol" className="w-[33%] h-[33%] mt-[10%]"/>
+                {loading && prompt ?  <p className="font-thin text-blue-300 text-4xl absolute bottom-[20%]">Generating video please wait...</p>
+                    : (
+                        <p className="font-thin text-blue-300 text-4xl absolute bottom-[20%]">Please input a prompt command...</p>
+                )}
             </div>
         </div>
-      {loading && <p>Loading...</p>}
-      {videoURL && <video src={videoURL} controls />}
-      {videoURL && (
-        <div>
-          <button onClick={clearVideo}>Clear Video</button>
-          <button onClick={downloadVideo}>Download Video</button>
-        </div>
-      )}
     </div>
   );
 }
