@@ -1,0 +1,27 @@
+from manim import *
+
+
+class Generated(Scene):
+    def construct(self):
+        # Text
+        title = Text("Area of a Triangle").scale(1.5).to_edge(UP)
+        formula = Text("Area = 0.5 * base * height").scale(1.2).to_edge(DOWN)
+
+        # Triangle
+        triangle = Triangle().scale(2)
+
+        # Base and Height
+        base = Line(triangle.get_corner(DL), triangle.get_corner(DR), color=YELLOW)
+        height = Line(triangle.get_corner(UP), triangle.get_corner(DL), color=RED)
+
+        # Labels
+        base_label = Text("Base").next_to(base, DOWN)
+        height_label = Text("Height").next_to(height, LEFT)
+
+        # Animations
+        self.play(Write(title))
+        self.play(Create(triangle))
+        self.play(Create(base), Create(height))
+        self.play(Write(base_label), Write(height_label))
+        self.play(Write(formula))
+        self.wait()
